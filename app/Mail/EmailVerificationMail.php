@@ -10,17 +10,17 @@ class EmailVerificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $activationCode;
+    public $verificationLink;
 
-    public function __construct($activationCode)
+    public function __construct($verificationLink)
     {
-        $this->activationCode = $activationCode;
+        $this->verificationLink = $verificationLink;
     }
 
     public function build()
     {
         return $this->subject('Verify Your Email Address')
             ->view('emails.verify-email')
-            ->with(['activationCode' => $this->activationCode]);
+            ->with(['verificationLink' => $this->verificationLink]);
     }
 }

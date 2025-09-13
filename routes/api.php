@@ -7,4 +7,4 @@ use App\Http\Controllers\AuthController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
+Route::get('/verify-email/{token}', [AuthController::class, 'verifyEmail']);

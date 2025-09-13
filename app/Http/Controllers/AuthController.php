@@ -34,7 +34,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'reCAPTCHA verification failed'], 422);
         }
 
-        $activationCode = bin2hex(random_bytes(16));
+        $activationCode = bin2hex(random_bytes(32));
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -44,8 +44,9 @@ class AuthController extends Controller
             'isActive' => false,
         ]);
 
-        // Send verification email
-        Mail::to($user->email)->send(new EmailVerificationMail($activationCode));
+        // Generate verification link with random token
+        $verificationLink = url('/api/verify-email/' . $activationCode);
+        Mail::to($user->email)->send(new EmailVerificationMail($verificationLink));
 
         return response()->json(['message' => 'User registered successfully. Please check your email to verify your account.'], 201);
     }
@@ -84,16 +85,15 @@ class AuthController extends Controller
         return response()->json(['message' => 'Unable to send reset link'], 400);
     }
 
-    public function verifyEmail(Request $request)
+    public function verifyEmail($token)
     {
-        $code = $request->query('code');
-        if (!$code) {
-            return response()->json(['message' => 'Activation code is required'], 400);
+        if (!$token) {
+            return response()->json(['message' => 'Activation token is required'], 400);
         }
 
-        $user = User::where('activationCode', $code)->first();
+        $user = User::where('activationCode', $token)->first();
         if (!$user) {
-            return response()->json(['message' => 'Invalid or expired activation code'], 400);
+            return response()->json(['message' => 'Invalid or expired activation token'], 400);
         }
 
         $user->isActive = true;
