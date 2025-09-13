@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,6 +30,11 @@ return [
     */
 
     'connections' => [
+        'mongodb' => [
+            'driver'   => 'mongodb',
+            'dsn'      => env('MONGO_URL'),
+            'database' => env('DB_DATABASE', 'tripaiderDB'),
+        ],
 
         'sqlite' => [
             'driver' => 'sqlite',

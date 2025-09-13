@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  title: tripaider.com Auth API
+  version: 1.0.0
+  description: API documentation for authentication and email verification endpoints.
+tags:
+  - name: auth
+    description: Authentication and email verification endpoints
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/register:
+    post:
+      tags:
+        - auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - usertype
+                - password
+                - password_confirmation
+                - recaptchaValue
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                usertype:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                recaptchaValue:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '422':
+          description: Validation or reCAPTCHA error
+  /api/login:
+    post:
+      tags:
+        - auth
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+  /api/forgot-password:
+    post:
+      tags:
+        - auth
+      summary: Forgot password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Password reset link sent
+        '400':
+          description: Unable to send reset link
+  /api/verify-email:
+    get:
+      tags:
+        - auth
+      summary: Verify user email
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+          description: Activation code sent to user's email
+      responses:
+        '200':
+          description: Email verified successfully
+        '400':
+          description: Invalid or expired activation code
