@@ -14,10 +14,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:2|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'usertype' => 'required|string',
-            'password' => 'required|string|min:6|confirmed',
+            'usertype' => 'required|string|in:agent,traveler,almighty',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/',
+            ],
             'recaptchaValue' => 'required|string',
         ]);
 
